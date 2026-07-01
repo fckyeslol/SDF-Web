@@ -257,7 +257,7 @@ const identidad: PageDef[] = [
     title: 'Nuestro Carisma: la Transformación',
     eyebrow: 'Identidad',
     subtitle: 'Un estilo de vida que nace del encuentro real con Jesucristo.',
-    heroImage: '/assets/photos/dove-fire.jpg',
+    heroImage: '/assets/photos/sdf-1.jpg',
     blocks: [
       {
         kind: 'lead',
@@ -308,8 +308,8 @@ const identidad: PageDef[] = [
         eyebrow: 'Vive el carisma',
         heading: 'Da el primer paso hacia la Transformación',
         text: 'Si sientes la llamada a este estilo de vida, escríbenos y te acompañamos.',
-        image: '/assets/photos/sdf-1.jpg',
-        imageAlt: 'Sembradores de Fe en oración comunitaria',
+        image: '/assets/photos/sdf-6.jpg',
+        imageAlt: 'Comunidad de Sembradores de Fe en adoración',
         ctaLabel: 'Quiero ser Sembrador',
         ctaHref: '/contacto',
       },
@@ -754,8 +754,8 @@ const formacion: PageDef[] = [
         eyebrow: 'El siguiente paso',
         heading: 'La Consagración',
         text: 'Cuando el camino madura, llega la promesa pública de configuración con Cristo. Conócela.',
-        image: '/assets/photos/dove-fire.jpg',
-        imageAlt: 'Símbolo del Espíritu Santo: paloma y fuego',
+        image: '/assets/photos/sdf-6.jpg',
+        imageAlt: 'Comunidad de Sembradores de Fe en adoración',
         ctaLabel: 'Conoce la Consagración',
         ctaHref: '/consagracion',
       },
@@ -766,7 +766,7 @@ const formacion: PageDef[] = [
     title: 'La Consagración',
     eyebrow: 'Promesa',
     subtitle: 'Expresión pública de la configuración con Cristo en un camino apostólico y ascético.',
-    heroImage: '/assets/photos/dove-fire.jpg',
+    heroImage: '/assets/photos/hero-worship.jpg',
     blocks: [
       {
         kind: 'lead',
