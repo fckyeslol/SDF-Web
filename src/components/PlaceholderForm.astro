@@ -1,0 +1,56 @@
+---
+interface Props { fields: string[]; }
+const { fields } = Astro.props;
+---
+<form class="ph-form" onsubmit="event.preventDefault(); this.querySelector('.ph-note').hidden = false;">
+  {fields.map((f) => {
+    const isLong = /message|testimony|request|notes|details/i.test(f);
+    const id = f.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    return (
+      <label class="ph-field">
+        <span>{f}</span>
+        {isLong
+          ? <textarea id={id} name={id} rows="5"></textarea>
+          : <input id={id} name={id} type={/email/i.test(f) ? 'email' : /password/i.test(f) ? 'password' : 'text'} />}
+      </label>
+    );
+  })}
+  <button type="submit">Submit</button>
+  <p class="ph-note" hidden>Formulario de demostración — conecta tu backend/servicio real.</p>
+</form>
+
+<style>
+  .ph-form { display: grid; gap: var(--space-4); max-width: 520px; margin-top: var(--space-6); }
+  .ph-field { display: grid; gap: var(--space-2); }
+  .ph-field span {
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    color: var(--color-heading);
+  }
+  input, textarea {
+    font: inherit;
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    color: var(--color-text);
+  }
+  input:focus, textarea:focus { outline: none; border-color: var(--color-accent); box-shadow: 0 0 0 3px var(--c-brand-100); }
+  button {
+    justify-self: start;
+    background: var(--color-accent);
+    color: var(--color-accent-contrast);
+    border: 0;
+    padding: var(--space-3) var(--space-8);
+    border-radius: var(--radius-pill);
+    font-family: var(--font-display);
+    font-weight: var(--weight-bold);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    transition: transform var(--duration-fast) var(--ease-out-expo);
+  }
+  button:hover { transform: translateY(-2px); }
+  .ph-note { color: var(--color-accent); font-size: var(--text-sm); }
+</style>

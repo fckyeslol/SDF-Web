@@ -1,0 +1,87 @@
+---
+// Banda full-bleed: foto de fondo + capa oscura + mensaje corto y CTA.
+// Para los momentos emocionales del recorrido (llamado, comunidad).
+interface Props {
+  eyebrow?: string;
+  heading: string;
+  text?: string;
+  image: string;
+  imageAlt: string;
+  ctaLabel: string;
+  ctaHref: string;
+}
+const { eyebrow, heading, text, image, imageAlt, ctaLabel, ctaHref } = Astro.props;
+---
+<section class="photo-band">
+  <img class="pb-bg" src={image} alt={imageAlt} width="1600" height="1067" loading="lazy" decoding="async" />
+  <div class="pb-overlay" aria-hidden="true"></div>
+  <div class="container pb-inner">
+    {eyebrow && <p class="eyebrow pb-eyebrow">{eyebrow}</p>}
+    <h2 class="pb-heading">{heading}</h2>
+    {text && <p class="pb-text">{text}</p>}
+    <a class="pb-cta" href={ctaHref}>{ctaLabel}</a>
+  </div>
+</section>
+
+<style>
+  .photo-band {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding-block: clamp(5rem, 4rem + 6vw, 9rem);
+    text-align: center;
+    color: #fff;
+  }
+  .pb-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -2;
+  }
+  .pb-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--c-brand-900) 78%, transparent),
+      color-mix(in srgb, var(--c-brand-900) 62%, transparent)
+    );
+  }
+  .pb-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 52ch;
+  }
+  .pb-eyebrow { color: var(--c-accent-300); }
+  .pb-heading {
+    color: #fff;
+    font-size: var(--text-3xl);
+    margin-top: var(--space-2);
+    max-width: 20ch;
+  }
+  .pb-text {
+    margin-top: var(--space-4);
+    font-size: var(--text-lg);
+    line-height: var(--leading-normal);
+    opacity: 0.9;
+    max-width: 48ch;
+  }
+  .pb-cta {
+    display: inline-block;
+    margin-top: var(--space-8);
+    background: var(--color-accent);
+    color: #fff;
+    padding: var(--space-4) var(--space-8);
+    border-radius: var(--radius-pill);
+    font-family: var(--font-display);
+    font-weight: var(--weight-bold);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    transition: transform var(--duration-fast) var(--ease-out-expo);
+  }
+  .pb-cta:hover { transform: translateY(-2px); color: #fff; }
+</style>

@@ -1,0 +1,107 @@
+/* ============================================================
+   DESIGN TOKENS  ·  ÚNICA fuente de verdad de la identidad visual
+   ------------------------------------------------------------
+   Para re-tematizar TODO el sitio, edita SOLO este archivo.
+   Los componentes nunca hardcodean color/tipografía: leen tokens.
+   Valores base extraídos de la estructura de referencia
+   (Playfair Display / Lato / Josefin Sans, acento azul Divi).
+   ============================================================ */
+
+:root {
+  /* ---- PALETA PRIMITIVA (colores oficiales de marca SDF) ---- */
+  /* Azul #1C3F7C + dorado #C9A227. Edítalos para re-tematizar todo. */
+  --c-brand-900: #0e2148;
+  --c-brand-700: #163262;
+  --c-brand-500: #1c3f7c; /* azul oficial SDF */
+  --c-brand-300: #7b96c4;
+  --c-brand-100: #e6ecf6;
+
+  --c-accent-500: #c9a227; /* dorado oficial SDF */
+  --c-accent-300: #e2c261;
+
+  --c-neutral-0:  #ffffff;
+  --c-neutral-50: #f7f8fa;
+  --c-neutral-100:#eef0f3;
+  --c-neutral-300:#c9ced6;
+  --c-neutral-500:#6b7280;
+  --c-neutral-700:#3e3e3e;
+  --c-neutral-900:#1a1c20;
+
+  /* ---- TOKENS SEMÁNTICOS (los que usan los componentes) ---- */
+  --color-bg:            var(--c-neutral-0);
+  --color-bg-subtle:     var(--c-neutral-50);
+  --color-surface:       var(--c-neutral-0);
+  --color-text:          var(--c-neutral-700);
+  --color-heading:       var(--c-brand-900);
+  --color-muted:         var(--c-neutral-500);
+  --color-accent:        var(--c-brand-500);
+  --color-accent-contrast: var(--c-neutral-0);
+  --color-secondary:     var(--c-accent-500);
+  --color-border:        var(--c-neutral-100);
+  --color-header-bg:     var(--c-neutral-0);
+  --color-footer-bg:     var(--c-brand-900);
+  --color-footer-text:   var(--c-neutral-100);
+
+  /* ---- TIPOGRAFÍA ---- */
+  --font-sans:    'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-heading: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --font-display: var(--font-sans); /* eyebrows, botones, nav */
+  --font-body:    var(--font-sans); /* texto corrido */
+
+  --text-xs:   clamp(0.75rem, 0.72rem + 0.15vw, 0.8125rem);
+  --text-sm:   clamp(0.875rem, 0.84rem + 0.2vw, 0.9375rem);
+  --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.0625rem);
+  --text-lg:   clamp(1.125rem, 1.05rem + 0.4vw, 1.25rem);
+  --text-xl:   clamp(1.375rem, 1.2rem + 0.7vw, 1.625rem);
+  --text-2xl:  clamp(1.75rem, 1.4rem + 1.4vw, 2.25rem);
+  --text-3xl:  clamp(2.25rem, 1.6rem + 2.6vw, 3.25rem);
+  --text-hero: clamp(2.75rem, 1.6rem + 4.6vw, 4.75rem);
+
+  --leading-tight: 1.15;
+  --leading-snug:  1.35;
+  --leading-normal:1.6;
+
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-bold:   700;
+
+  /* ---- ESPACIADO / RITMO ---- */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-section: clamp(3.5rem, 2.5rem + 4vw, 7rem);
+  --container-max: 1200px;
+  --container-narrow: 760px;
+
+  /* ---- FORMA / ELEVACIÓN ---- */
+  --radius-sm: 4px;
+  --radius-md: 10px;
+  --radius-lg: 20px;
+  --radius-pill: 999px;
+  --shadow-sm: 0 1px 2px rgba(13, 27, 42, 0.06);
+  --shadow-md: 0 6px 24px rgba(13, 27, 42, 0.10);
+  --shadow-lg: 0 20px 60px rgba(13, 27, 42, 0.18);
+
+  /* ---- MOTION ---- */
+  --duration-fast: 150ms;
+  --duration-normal: 300ms;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* ---- LAYOUT ---- */
+  --header-height: 84px;
+  --z-header: 100;
+  --z-overlay: 200;
+}
+
+/* Ejemplo de tema alternativo: descomenta y ajusta para "modo marca 2".
+[data-theme="warm"] {
+  --c-brand-500: #b5432f;
+  --c-brand-900: #3a140d;
+  --color-accent: var(--c-brand-500);
+}
+*/

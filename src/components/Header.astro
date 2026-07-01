@@ -1,0 +1,233 @@
+---
+import { nav, site } from '../data/site';
+interface Props { overlay?: boolean; }
+const { overlay = false } = Astro.props;
+---
+<header class={`site-header${overlay ? ' overlay' : ''}`} data-overlay={overlay ? 'true' : 'false'}>
+  <div class="container header-inner">
+    <a class="brand" href="/">
+      <img class="brand-logo" src={site.logo} alt={`Logo ${site.name}`} width="56" height="56" />
+      <span class="brand-text">
+        <span class="brand-name">{site.name}</span>
+        <span class="brand-tagline">{site.tagline}</span>
+      </span>
+    </a>
+
+    <nav class="primary-nav" aria-label="Main navigation">
+      <ul class="nav-list">
+        {nav.map((item) => (
+          <li class={`nav-item${item.children ? ' has-children' : ''}`}>
+            <a href={item.href}>{item.label}</a>
+            {item.children && (
+              <ul class="submenu">
+                {item.children.map((child) => (
+                  <li><a href={child.href}>{child.label}</a></li>
+                ))}
+              </ul>
+            )}
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <a class="nav-cta" href={site.cta.href}>{site.cta.label}</a>
+
+    <button class="nav-toggle" aria-label="Open menu" aria-expanded="false" data-nav-toggle>
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: var(--z-header);
+    background: var(--color-header-bg);
+    border-bottom: 1px solid var(--color-border);
+    backdrop-filter: saturate(140%) blur(6px);
+    transition: background var(--duration-normal) var(--ease-out-expo),
+                border-color var(--duration-normal) var(--ease-out-expo);
+  }
+  .site-header .container {
+    max-width: 100%;
+    padding-inline: clamp(1.5rem, 3vw, 3.5rem);
+  }
+
+  /* --- Overlay: transparente sobre el hero, sólido al hacer scroll --- */
+  .site-header.overlay {
+    position: fixed;
+    left: 0; right: 0; top: 0;
+    background: transparent;
+    border-bottom-color: transparent;
+    backdrop-filter: none;
+  }
+  .site-header.overlay .brand-name,
+  .site-header.overlay .brand-tagline,
+  .site-header.overlay .nav-item > a { color: #fff; }
+  .site-header.overlay .brand-tagline { opacity: 0.85; }
+  .site-header.overlay .nav-toggle span { background: #fff; }
+  .site-header.overlay.scrolled {
+    background: var(--color-header-bg);
+    border-bottom-color: var(--color-border);
+    backdrop-filter: saturate(140%) blur(6px);
+    box-shadow: var(--shadow-sm);
+  }
+  .site-header.overlay.scrolled .brand-name,
+  .site-header.overlay.scrolled .nav-item > a { color: var(--color-heading); }
+  .site-header.overlay.scrolled .brand-tagline { color: var(--color-muted); opacity: 1; }
+  .site-header.overlay.scrolled .nav-toggle span { background: var(--color-heading); }
+  .header-inner {
+    display: flex;
+    align-items: center;
+    gap: var(--space-6);
+    min-height: var(--header-height);
+  }
+  .brand { display: flex; flex-direction: row; align-items: center; gap: var(--space-3); line-height: 1; }
+  .brand-logo { width: 56px; height: 56px; border-radius: 50%; flex-shrink: 0; object-fit: cover; object-position: center; }
+  .brand-text { display: flex; flex-direction: column; }
+  .brand-name {
+    font-family: var(--font-heading);
+    font-weight: var(--weight-bold);
+    font-size: var(--text-lg);
+    color: var(--color-heading);
+  }
+  .brand-tagline {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    font-size: 0.65rem;
+    color: var(--color-muted);
+    margin-top: 4px;
+  }
+
+  .primary-nav { margin-left: auto; }
+  .nav-list { list-style: none; display: flex; align-items: center; gap: clamp(var(--space-3), 1.4vw, var(--space-6)); padding: 0; }
+  .nav-item { position: relative; }
+  .nav-item > a {
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    font-weight: var(--weight-medium);
+    color: var(--color-heading);
+    padding-block: var(--space-3);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+  }
+  .has-children > a::after {
+    content: '';
+    width: 6px; height: 6px;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(45deg) translateY(-1px);
+    opacity: 0.6;
+  }
+
+  .submenu {
+    list-style: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 240px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    padding: var(--space-2);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(8px);
+    transition: opacity var(--duration-normal) var(--ease-out-expo),
+                transform var(--duration-normal) var(--ease-out-expo),
+                visibility var(--duration-normal);
+  }
+  .nav-item:hover .submenu,
+  .nav-item:focus-within .submenu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  .submenu a {
+    display: block;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    color: var(--color-text);
+    font-size: var(--text-sm);
+  }
+  .submenu a:hover { background: var(--color-bg-subtle); color: var(--color-accent); }
+
+  .nav-cta {
+    background: var(--color-accent);
+    color: var(--color-accent-contrast);
+    padding: var(--space-3) var(--space-6);
+    border-radius: var(--radius-pill);
+    font-family: var(--font-display);
+    font-weight: var(--weight-bold);
+    font-size: var(--text-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+    transition: transform var(--duration-fast) var(--ease-out-expo), box-shadow var(--duration-fast);
+  }
+  .nav-cta:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); color: var(--color-accent-contrast); }
+
+  .nav-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    padding: var(--space-2);
+  }
+  .nav-toggle span { width: 26px; height: 2px; background: var(--color-heading); border-radius: 2px; }
+
+  @media (max-width: 1100px) {
+    .nav-cta { display: none; }
+    .nav-toggle { display: flex; margin-left: auto; }
+    .primary-nav {
+      position: fixed;
+      inset: var(--header-height) 0 0 auto;
+      width: min(360px, 85vw);
+      background: var(--color-surface);
+      border-left: 1px solid var(--color-border);
+      padding: var(--space-6);
+      overflow-y: auto;
+      transform: translateX(100%);
+      transition: transform var(--duration-normal) var(--ease-out-expo);
+      margin-left: 0;
+    }
+    .primary-nav[data-open='true'] { transform: translateX(0); }
+    .nav-list { flex-direction: column; gap: var(--space-2); }
+    .submenu {
+      position: static;
+      opacity: 1;
+      visibility: visible;
+      transform: none;
+      box-shadow: none;
+      border: 0;
+      padding-left: var(--space-4);
+    }
+  }
+</style>
+
+<script>
+  const toggle = document.querySelector('[data-nav-toggle]');
+  const menu = document.querySelector('.primary-nav');
+  toggle?.addEventListener('click', () => {
+    const open = menu?.getAttribute('data-open') === 'true';
+    menu?.setAttribute('data-open', String(!open));
+    toggle.setAttribute('aria-expanded', String(!open));
+  });
+
+  // Header transparente que se vuelve sólido al hacer scroll (solo en modo overlay)
+  const header = document.querySelector('.site-header');
+  if (header?.getAttribute('data-overlay') === 'true') {
+    const onScroll = () => header.classList.toggle('scrolled', window.scrollY > 40);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+  }
+</script>

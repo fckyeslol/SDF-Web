@@ -1,0 +1,111 @@
+---
+// Fila de tarjetas azules sólidas de ancho completo. Inspirada en el bloque
+// "¿Eres nuevo en la fe?": llena el espacio, alterna dos tonos de azul,
+// cada tarjeta con ícono + texto + botón. Rompe el ritmo de los splits.
+interface StepItem {
+  icon?: string;
+  title: string;
+  body: string;
+  ctaLabel: string;
+  href: string;
+}
+interface Props { eyebrow?: string; heading?: string; items: StepItem[]; }
+const { eyebrow, heading, items } = Astro.props;
+
+const icons: Record<string, string> = {
+  sprout: '<path d="M12 21v-8"/><path d="M12 13c0-3 2-5 5-5 0 3-2 5-5 5z"/><path d="M12 13c0-3-2-5-5-5 0 3 2 5 5 5z"/>',
+  people: '<circle cx="8" cy="9" r="2.4"/><circle cx="16" cy="9" r="2.4"/><path d="M3.5 19c0-2.5 2-4.5 4.5-4.5s4.5 2 4.5 4.5"/><path d="M12.6 14.9c1-.9 2.1-1.4 3.4-1.4 2.5 0 4.5 2 4.5 4.5"/>',
+  book: '<path d="M12 6c-2-1.3-4.5-1.5-7-1v12c2.5-.5 5-.3 7 1 2-1.3 4.5-1.5 7-1V5c-2.5-.5-5-.3-7 1z"/><path d="M12 6v13"/>',
+  flame: '<path d="M12 3c3 3 5 5.5 5 9a5 5 0 0 1-10 0c0-1.8 1-3.3 2-4 .3 1 .9 1.7 1.7 2C11 8.4 11 5.8 12 3z"/>',
+  heart: '<path d="M12 20S3 14.5 3 8.8C3 6.1 5 4.5 7.2 4.5c1.7 0 3.1 1 4.8 3 1.7-2 3.1-3 4.8-3C19 4.5 21 6.1 21 8.8 21 14.5 12 20 12 20z"/>',
+};
+---
+<section class="steps section">
+  <div class="container">
+    {eyebrow && <p class="eyebrow steps-eyebrow">{eyebrow}</p>}
+    {heading && <h2 class="steps-heading">{heading}</h2>}
+    <div class="steps-grid">
+      {items.map((s, i) => (
+        <article class:list={['step-card', i % 2 === 1 && 'is-dark']}>
+          {s.icon && icons[s.icon] && (
+            <span class="step-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" set:html={icons[s.icon]} />
+            </span>
+          )}
+          <h3>{s.title}</h3>
+          <p>{s.body}</p>
+          <a class="step-cta" href={s.href}>{s.ctaLabel}</a>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .steps { text-align: center; }
+  .steps-eyebrow { margin-bottom: var(--space-2); }
+  .steps-heading {
+    max-width: 32ch;
+    margin-inline: auto;
+    margin-block: 0 var(--space-12);
+    text-align: center;
+  }
+  .steps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--space-6);
+  }
+  .step-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: clamp(var(--space-8), 4vw, var(--space-12)) var(--space-8);
+    border-radius: var(--radius-lg);
+    background: var(--c-brand-500);
+    color: #fff;
+    box-shadow: var(--shadow-md);
+  }
+  .step-card.is-dark { background: var(--c-brand-900); }
+
+  .step-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 68px;
+    height: 68px;
+    margin-bottom: var(--space-5);
+    border-radius: var(--radius-pill);
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+  }
+  .step-icon svg { width: 34px; height: 34px; }
+
+  .step-card h3 { color: #fff; font-size: var(--text-xl); }
+  .step-card p {
+    margin-top: var(--space-3);
+    color: rgba(255, 255, 255, 0.85);
+    font-size: var(--text-base);
+    line-height: var(--leading-normal);
+    max-width: 34ch;
+  }
+  .step-cta {
+    margin-top: var(--space-8);
+    padding: var(--space-3) var(--space-8);
+    border: 1.5px solid rgba(255, 255, 255, 0.7);
+    border-radius: var(--radius-pill);
+    color: #fff;
+    font-family: var(--font-display);
+    font-weight: var(--weight-bold);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: var(--text-sm);
+    transition: background var(--duration-normal), color var(--duration-normal), transform var(--duration-fast) var(--ease-out-expo);
+  }
+  .step-cta:hover {
+    background: #fff;
+    color: var(--c-brand-900);
+    transform: translateY(-2px);
+  }
+  .is-dark .step-cta:hover { color: var(--c-brand-900); }
+</style>

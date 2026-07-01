@@ -1,0 +1,145 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import FeatureSplit from '../components/FeatureSplit.astro';
+import StepCards from '../components/StepCards.astro';
+import PhotoBand from '../components/PhotoBand.astro';
+import { site } from '../data/site';
+
+const pasos = [
+  {
+    icon: 'sprout',
+    title: 'Nuestro Carisma',
+    body: 'La Transformación: un encuentro real con Jesucristo que renueva la vida por completo.',
+    ctaLabel: 'Conócelo',
+    href: '/nuestro-carisma',
+  },
+  {
+    icon: 'people',
+    title: 'Las Koinonías',
+    body: 'Grupos de doce, de dos en dos, para caminar cerca del hermano como la Iglesia primitiva.',
+    ctaLabel: 'Únete',
+    href: '/koinonias',
+  },
+  {
+    icon: 'book',
+    title: 'Formación',
+    body: 'Un camino gradual, libre y madurado bajo la acción del Espíritu Santo.',
+    ctaLabel: 'Empieza',
+    href: '/formacion',
+  },
+];
+---
+<BaseLayout heroOverlay>
+  <Hero
+    full
+    eyebrow="Bienvenido a tu comunidad"
+    title="Sembradores de Fe"
+    subtitle="Una comunidad católica de laicos que vive el carisma de la Transformación."
+    ctaLabel="Conoce nuestra identidad"
+    ctaHref="/identidad"
+    image="/assets/videos/hero-worship-poster.jpg"
+    video="/assets/videos/hero-worship.mp4"
+  />
+  <span id="contenido"></span>
+
+  <section class="vision-band">
+    <div class="container container--narrow">
+      <p class="eyebrow vision-eyebrow">Nuestra visión</p>
+      <p class="vision-line">
+        Llevar la Transformación de Cristo a Colombia y al mundo, como testigos
+        y cooperadores de la Madre Iglesia.
+      </p>
+    </div>
+  </section>
+
+  <FeatureSplit
+    eyebrow="Nuestro fundador y director"
+    heading="Un movimiento de laicos para laicos"
+    paras={[
+      'Sembradores de Fe nació el 30 de junio de 2015, fruto del trabajo apostólico y la experiencia mística con el Espíritu Santo de Ronald Alfonso Granados Arroyo, psicólogo y predicador.',
+      'Tras años de ser testigo del poder transformador de Dios, recibió la misión de crear un movimiento que, en sintonía con el Concilio Vaticano II, avance en conquistar almas para Cristo.',
+    ]}
+    image="/assets/photos/founder.jpg"
+    imageAlt="Ronald Alfonso Granados Arroyo, fundador y director de Sembradores de Fe"
+    ctaLabel="Conoce nuestra historia"
+    ctaHref="/historia"
+  />
+
+  <StepCards
+    heading="¿Quieres caminar con nosotros?"
+    items={pasos}
+  />
+
+  <FeatureSplit
+    reverse
+    tone="subtle"
+    eyebrow="Nuestra misión"
+    heading="Hacer discípulos que transforman su vida en Cristo"
+    paras={[
+      'Vivimos una experiencia auténtica en Cristo Jesús a través de la oración, el ayuno, la vigilia y la Santa Eucaristía —máxima expresión de nuestra fe—.',
+      'Siempre sujetos al magisterio y a la sana doctrina de nuestra Iglesia Católica, por medio de una espiritualidad renovada.',
+    ]}
+    image="/assets/photos/hero-worship.jpg"
+    imageAlt="Comunidad de Sembradores de Fe en adoración"
+    ctaLabel="Conoce nuestra identidad"
+    ctaHref="/identidad"
+  />
+
+  <section class="section quote-band">
+    <div class="container container--narrow">
+      <p class="eyebrow">Nuestro carisma</p>
+      <blockquote>
+        “Transformarse dando frutos de conversión y de vida ascética alegre,
+        con un servicio de amor, para vivir el Evangelio y participar en la
+        misión de la Iglesia.”
+      </blockquote>
+      <a class="quote-cta" href="/reglas-de-vida">Lee nuestras Reglas de Vida →</a>
+    </div>
+  </section>
+
+  <PhotoBand
+    eyebrow="Súmate"
+    heading="«El sembrador salió a sembrar…»"
+    text="Cristianos católicos de cualquier condición y estado de vida pueden seguir este camino. Si sientes la llamada, escríbenos y te acompañamos."
+    image="/assets/photos/sdf-1.jpg"
+    imageAlt="Jóvenes en oración durante un encuentro de comunidad"
+    ctaLabel={site.cta.label}
+    ctaHref={site.cta.href}
+  />
+</BaseLayout>
+
+<style>
+  .vision-band {
+    background: var(--c-brand-500);
+    color: #fff;
+    text-align: center;
+    padding-block: clamp(3rem, 2.5rem + 3vw, 5rem);
+  }
+  .vision-eyebrow { color: var(--c-accent-300); }
+  .vision-line {
+    font-family: var(--font-heading);
+    font-size: var(--text-2xl);
+    line-height: var(--leading-snug);
+    margin-top: var(--space-3);
+    color: #fff;
+  }
+
+  .quote-band { background: var(--color-bg); text-align: center; }
+  blockquote {
+    font-family: var(--font-heading);
+    font-size: var(--text-2xl);
+    color: var(--color-heading);
+    line-height: var(--leading-snug);
+    font-style: italic;
+    margin-top: var(--space-4);
+  }
+  .quote-cta {
+    display: inline-block;
+    margin-top: var(--space-6);
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: var(--weight-medium);
+  }
+</style>

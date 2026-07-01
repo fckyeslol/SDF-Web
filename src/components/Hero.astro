@@ -1,0 +1,240 @@
+---
+interface Props {
+  eyebrow?: string;
+  title: string;
+  subtitle?: string;
+  ctaLabel?: string;
+  ctaHref?: string;
+  image?: string;
+  /** Video de fondo (mp4/webm). Si se define, reemplaza la imagen. */
+  video?: string;
+  /** Hero a pantalla completa (100vh, full-bleed con header encima). */
+  full?: boolean;
+}
+const { eyebrow, title, subtitle, ctaLabel, ctaHref, image, video, full } = Astro.props;
+
+// Efecto "letras creciendo hacia arriba": partimos el título en palabras y
+// letras, con un retardo escalonado por letra para el stagger.
+const CHAR_BASE = 260;
+const CHAR_STEP = 34;
+let _ci = 0;
+const titleWords = title.split(' ').map((word) => ({
+  chars: [...word].map((ch) => ({ ch, delay: CHAR_BASE + _ci++ * CHAR_STEP })),
+}));
+const lastCharDelay = CHAR_BASE + Math.max(0, _ci - 1) * CHAR_STEP;
+const subtitleDelay = lastCharDelay + 260;
+const ctaDelay = subtitleDelay + 150;
+---
+<section class={`hero${full ? ' hero--full' : ''}`}>
+  <div class="hero-media">
+    {video ? (
+      <video autoplay muted loop playsinline poster={image}>
+        <source src={video} type="video/mp4" />
+      </video>
+    ) : image ? (
+      <img class="hero-img" src={image} alt="" aria-hidden="true" />
+    ) : null}
+  </div>
+  <div class="hero-overlay"></div>
+  {!image && !video && (
+    <img class="hero-watermark" src="/assets/logos/1.png" alt="" aria-hidden="true" loading="lazy" />
+  )}
+  <div class="container hero-inner">
+    {eyebrow && <p class="eyebrow reveal-up">{eyebrow}</p>}
+    <h1 class="hero-title" aria-label={title}>
+      {titleWords.map((w, wi) => (
+        <>
+          <span class="word" aria-hidden="true">
+            {w.chars.map(({ ch, delay }) => (
+              <span class="char" style={`animation-delay:${delay}ms`}>{ch}</span>
+            ))}
+          </span>{wi < titleWords.length - 1 ? ' ' : ''}
+        </>
+      ))}
+    </h1>
+    {subtitle && (
+      <p class="hero-subtitle reveal-up" style={`animation-delay:${subtitleDelay}ms`}>{subtitle}</p>
+    )}
+    {ctaLabel && ctaHref && (
+      <span class="hero-cta-wrap reveal-up" style={`animation-delay:${ctaDelay}ms`}>
+        <a class="hero-cta" href={ctaHref}>{ctaLabel}</a>
+      </span>
+    )}
+  </div>
+  {full && (
+    <a class="hero-scroll" href="#contenido" aria-label="Desplázate hacia abajo">
+      <span></span>
+    </a>
+  )}
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: clamp(420px, 70vh, 720px);
+    display: grid;
+    place-items: center;
+    text-align: center;
+    color: #fff;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--c-brand-900), var(--c-brand-700));
+  }
+  .hero--full { min-height: 100vh; min-height: 100svh; }
+  /* Hero a pantalla completa: texto más grande y presente */
+  .hero--full .hero-inner {
+    max-width: min(94vw, 1080px);
+    padding-block: var(--space-8);
+  }
+  .hero--full .eyebrow {
+    font-size: var(--text-lg);
+    letter-spacing: 0.3em;
+    white-space: nowrap;
+  }
+  .hero--full .hero-title {
+    font-size: clamp(3.4rem, 1.4rem + 8vw, 8rem);
+    line-height: 1.02;
+    margin-top: var(--space-4);
+    text-wrap: balance;
+  }
+  .hero--full .hero-subtitle {
+    font-size: var(--text-xl);
+    max-width: 34ch;
+    margin-inline: auto;
+    margin-top: var(--space-6);
+  }
+  .hero--full .hero-cta {
+    margin-top: var(--space-8);
+    font-size: var(--text-base);
+    padding: var(--space-4) var(--space-12);
+  }
+
+  .hero-media { position: absolute; inset: 0; }
+  .hero-media video,
+  .hero-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  /* Ken Burns: leve zoom continuo para dar vida a la foto */
+  .hero-img {
+    animation: kenburns 22s ease-in-out infinite alternate;
+    transform-origin: center 40%;
+  }
+  @keyframes kenburns {
+    from { transform: scale(1.03); }
+    to   { transform: scale(1.14); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-img { animation: none; }
+  }
+
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, rgba(14,33,72,0.34), rgba(14,33,72,0.55)),
+      radial-gradient(90% 70% at 50% 48%, rgba(14,33,72,0.12), rgba(14,33,72,0.42) 100%);
+  }
+  .hero-watermark {
+    position: absolute;
+    right: -6%;
+    bottom: -12%;
+    width: min(560px, 55%);
+    opacity: 0.10;
+    pointer-events: none;
+    filter: brightness(1.6);
+  }
+  @media (max-width: 720px) { .hero-watermark { display: none; } }
+
+  .hero-inner { position: relative; max-width: 62ch; padding-block: var(--space-16); z-index: 1; }
+
+  /* --- Efecto: letras creciendo hacia arriba --- */
+  .hero-title .word { display: inline-block; }
+  .hero-title .char {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(0.55em) scaleY(0.3);
+    transform-origin: bottom center;
+    animation: charGrow 0.75s var(--ease-out-expo) forwards;
+    will-change: transform, opacity;
+  }
+  @keyframes charGrow {
+    0%   { opacity: 0; transform: translateY(0.55em) scaleY(0.3); }
+    60%  { opacity: 1; }
+    100% { opacity: 1; transform: translateY(0) scaleY(1); }
+  }
+
+  /* Revelado en cascada para eyebrow, subtítulo y CTA */
+  .hero-cta-wrap { display: inline-block; }
+  .reveal-up { opacity: 0; animation: revealUp 0.7s var(--ease-out-expo) forwards; }
+  @keyframes revealUp {
+    from { opacity: 0; transform: translateY(22px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-title .char,
+    .reveal-up {
+      opacity: 1 !important;
+      transform: none !important;
+      animation: none !important;
+    }
+  }
+  .hero .eyebrow { color: var(--c-accent-300); }
+  .hero-title {
+    color: #fff;
+    font-size: var(--text-hero);
+    margin-top: var(--space-3);
+    text-shadow: 0 2px 30px rgba(0,0,0,0.35);
+  }
+  .hero-subtitle {
+    font-size: var(--text-lg);
+    margin-top: var(--space-4);
+    opacity: 0.95;
+    text-shadow: 0 1px 12px rgba(0,0,0,0.3);
+  }
+  .hero-cta {
+    display: inline-block;
+    margin-top: var(--space-8);
+    background: var(--color-accent);
+    color: var(--color-accent-contrast);
+    padding: var(--space-4) var(--space-8);
+    border-radius: var(--radius-pill);
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: var(--weight-bold);
+    white-space: nowrap;
+    transition: transform var(--duration-fast) var(--ease-out-expo), box-shadow var(--duration-fast);
+  }
+  .hero-cta:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); color: #fff; }
+
+  /* Indicador de scroll (solo hero full) */
+  .hero-scroll {
+    position: absolute;
+    bottom: var(--space-8);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 26px;
+    height: 42px;
+    border: 2px solid rgba(255,255,255,0.6);
+    border-radius: var(--radius-pill);
+    z-index: 1;
+  }
+  .hero-scroll span {
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    width: 4px;
+    height: 8px;
+    margin-left: -2px;
+    background: #fff;
+    border-radius: 2px;
+    animation: scrolldot 1.8s ease-in-out infinite;
+  }
+  @keyframes scrolldot {
+    0% { opacity: 0; transform: translateY(0); }
+    40% { opacity: 1; }
+    100% { opacity: 0; transform: translateY(14px); }
+  }
+</style>
