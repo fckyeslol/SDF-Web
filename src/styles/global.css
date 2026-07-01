@@ -76,6 +76,24 @@ img, picture, svg, video {
 
 .section { padding-block: var(--space-section); }
 
+/* ---- Reveal on scroll (micro-interacción) ----
+   Solo se oculta si hay JS (.js) para no romper accesibilidad/no-JS. */
+.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.7s var(--ease-out-expo),
+    transform 0.7s var(--ease-out-expo);
+  will-change: opacity, transform;
+}
+.js [data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .js [data-reveal] { opacity: 1 !important; transform: none !important; transition: none; }
+}
+
 .eyebrow {
   font-family: var(--font-display);
   text-transform: uppercase;

@@ -3,6 +3,7 @@
 // llena toda la altura. Inspirada en el bloque "Nuestros pastores": ocupa
 // espacio, tipografía grande. Un solo uso por página para no repetir formato.
 interface Props {
+  id?: string;
   eyebrow?: string;
   heading: string;
   paras: string[];
@@ -14,6 +15,7 @@ interface Props {
   tone?: 'default' | 'subtle';
 }
 const {
+  id,
   eyebrow,
   heading,
   paras,
@@ -25,7 +27,7 @@ const {
   tone = 'default',
 } = Astro.props;
 ---
-<section class:list={['feature-split', reverse && 'is-reverse', tone === 'subtle' && 'is-subtle']}>
+<section id={id} class:list={['feature-split', reverse && 'is-reverse', tone === 'subtle' && 'is-subtle']}>
   <figure class="fs-media">
     <img src={image} alt={imageAlt} width="1200" height="1400" loading="lazy" decoding="async" />
   </figure>
@@ -51,11 +53,30 @@ const {
     align-items: stretch;
     min-height: clamp(440px, 46vw, 640px);
     background: var(--color-bg);
+    scroll-margin-top: var(--header-height);
   }
   .feature-split.is-subtle { background: var(--color-bg-subtle); }
 
-  .fs-media { margin: 0; overflow: hidden; }
-  .fs-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .fs-media { margin: 0; overflow: hidden; position: relative; }
+  .fs-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.9s var(--ease-out-expo);
+  }
+  .feature-split:hover .fs-media img { transform: scale(1.045); }
+  /* Vignette sutil para dar profundidad al empalme con el texto */
+  .fs-media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    box-shadow: inset 0 0 120px rgba(14, 33, 72, 0.12);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .feature-split:hover .fs-media img { transform: none; }
+  }
 
   .fs-body { display: flex; align-items: center; }
   .fs-inner {
@@ -69,10 +90,21 @@ const {
   .is-reverse .fs-media { order: 2; }
   .is-reverse .fs-inner { margin-inline-start: auto; margin-inline-end: 0; }
 
+  .eyebrow { position: relative; display: inline-block; padding-bottom: var(--space-3); }
+  .eyebrow::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 40px;
+    height: 2px;
+    background: var(--color-secondary);
+    border-radius: var(--radius-pill);
+  }
   .fs-heading {
     font-size: clamp(2.25rem, 1.6rem + 3vw, 3.75rem);
     line-height: 1.05;
-    margin-top: var(--space-2);
+    margin-top: var(--space-3);
   }
   .fs-text {
     margin-top: var(--space-4);

@@ -24,9 +24,9 @@ export const site = {
   logo: '/assets/logos/logo-redondo.png',
   logoWatermark: '/assets/logos/1.png',
   social: {
-    facebook: '#',
-    instagram: '#',
-    youtube: '#',
+    facebook: 'https://web.facebook.com/sembradoresdefecolombia/',
+    instagram: 'https://www.instagram.com/sembradoresdefecolombia/',
+    youtube: 'https://www.youtube.com/@sembradoresdefecolombia/videos',
   },
   cta: { label: 'Quiero ser Sembrador', href: '/contacto' },
 };

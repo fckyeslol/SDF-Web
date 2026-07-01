@@ -9,16 +9,52 @@ import { nav, site } from '../data/site';
       <p class="footer-blurb">{site.description}</p>
     </div>
 
-    {nav.filter((i) => i.children).map((col) => (
-      <nav class="footer-col" aria-label={col.label}>
-        <h3>{col.label}</h3>
-        <ul>
-          {col.children!.map((c) => (
-            <li><a href={c.href}>{c.label}</a></li>
-          ))}
-        </ul>
-      </nav>
-    ))}
+    <div class="footer-nav">
+      {nav.filter((i) => i.children).map((col) => (
+        <nav class="footer-col" aria-label={col.label}>
+          <h3>{col.label}</h3>
+          <ul>
+            {col.children!.map((c) => (
+              <li><a href={c.href}>{c.label}</a></li>
+            ))}
+          </ul>
+        </nav>
+      ))}
+    </div>
+
+    <aside class="footer-contact">
+      <h3>Contacto</h3>
+      <p class="contact-loc">Barranquilla · Colombia</p>
+      <p class="contact-motto">{site.motto}</p>
+      <a href={site.cta.href} class="contact-link">{site.cta.label} →</a>
+
+      <ul class="footer-social" aria-label="Redes sociales">
+        <li>
+          <a href={site.social.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="2" y="2" width="20" height="20" rx="5" />
+              <circle cx="12" cy="12" r="4" />
+              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+            </svg>
+          </a>
+        </li>
+        <li>
+          <a href={site.social.youtube} target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M22.5 6.9a2.8 2.8 0 0 0-2-2C18.7 4.5 12 4.5 12 4.5s-6.7 0-8.5.4a2.8 2.8 0 0 0-2 2A29 29 0 0 0 1.5 12a29 29 0 0 0 .5 5.1 2.8 2.8 0 0 0 2 2c1.8.4 8.5.4 8.5.4s6.7 0 8.5-.4a2.8 2.8 0 0 0 2-2 29 29 0 0 0 .5-5.1 29 29 0 0 0-.5-5.1z" />
+              <polygon points="9.75 15.5 15.5 12 9.75 8.5 9.75 15.5" fill="currentColor" stroke="none" />
+            </svg>
+          </a>
+        </li>
+        <li>
+          <a href={site.social.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+            </svg>
+          </a>
+        </li>
+      </ul>
+    </aside>
   </div>
 
   <div class="container footer-bottom">
@@ -33,12 +69,24 @@ import { nav, site } from '../data/site';
     color: var(--color-footer-text);
     padding-top: var(--space-section);
   }
+
+  /* Tres zonas: marca · navegación (centro, repartida) · contacto */
   .footer-grid {
     display: grid;
-    grid-template-columns: 1.4fr repeat(auto-fit, minmax(160px, 1fr));
-    gap: var(--space-8);
+    grid-template-columns: minmax(220px, 1.2fr) minmax(0, 2.6fr) minmax(200px, 1fr);
+    gap: var(--space-12) var(--space-8);
+    align-items: start;
     padding-bottom: var(--space-12);
   }
+
+  /* Los grupos de nav fluyen en columnas dentro de la zona central,
+     así ocupan el ancho en 2-3 filas en vez de apilarse verticalmente. */
+  .footer-nav {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+    gap: var(--space-8) var(--space-6);
+  }
+
   .footer-brand .brand-name {
     font-family: var(--font-heading);
     font-size: var(--text-xl);
@@ -53,7 +101,9 @@ import { nav, site } from '../data/site';
     margin-top: var(--space-1);
   }
   .footer-blurb { margin-top: var(--space-4); opacity: 0.75; font-size: var(--text-sm); max-width: 34ch; }
-  .footer-col h3 {
+
+  .footer-col h3,
+  .footer-contact h3 {
     font-family: var(--font-display);
     font-size: var(--text-sm);
     text-transform: uppercase;
@@ -64,6 +114,60 @@ import { nav, site } from '../data/site';
   .footer-col ul { list-style: none; padding: 0; display: grid; gap: var(--space-2); }
   .footer-col a { color: var(--color-footer-text); opacity: 0.8; font-size: var(--text-sm); }
   .footer-col a:hover { opacity: 1; color: var(--color-accent); }
+
+  /* Bloque de texto a la derecha para equilibrar la marca de la izquierda */
+  .footer-contact {
+    border-left: 1px solid rgba(255, 255, 255, 0.12);
+    padding-left: var(--space-8);
+  }
+  .contact-loc {
+    font-size: var(--text-sm);
+    opacity: 0.85;
+  }
+  .contact-motto {
+    font-family: var(--font-heading);
+    font-style: italic;
+    font-size: var(--text-lg);
+    color: #fff;
+    opacity: 0.9;
+    margin-top: var(--space-3);
+    line-height: var(--leading-snug);
+  }
+  .contact-link {
+    display: inline-block;
+    margin-top: var(--space-4);
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    letter-spacing: 0.02em;
+    color: var(--color-secondary);
+  }
+  .contact-link:hover { color: #fff; }
+
+  .footer-social {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    gap: var(--space-3);
+    margin-top: var(--space-6);
+  }
+  .footer-social a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-pill);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: var(--color-footer-text);
+    transition: color var(--duration-fast) var(--ease-out-expo),
+                border-color var(--duration-fast) var(--ease-out-expo),
+                background var(--duration-fast) var(--ease-out-expo);
+  }
+  .footer-social a:hover {
+    color: #fff;
+    border-color: var(--color-secondary);
+    background: rgba(201, 162, 39, 0.15);
+  }
 
   .footer-bottom {
     display: flex;
@@ -83,4 +187,31 @@ import { nav, site } from '../data/site';
     border-radius: var(--radius-pill);
   }
   .footer-cta:hover { background: var(--color-accent); border-color: var(--color-accent); color: #fff; }
+
+  /* ---- Responsive ---- */
+  @media (max-width: 960px) {
+    .footer-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+    .footer-nav {
+      grid-column: 1 / -1;
+      order: 3;
+    }
+    .footer-contact {
+      border-left: none;
+      padding-left: 0;
+      text-align: right;
+    }
+    .footer-social { justify-content: flex-end; }
+  }
+  @media (max-width: 560px) {
+    .footer-grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-8);
+    }
+    .footer-contact {
+      text-align: left;
+    }
+    .footer-social { justify-content: flex-start; }
+  }
 </style>

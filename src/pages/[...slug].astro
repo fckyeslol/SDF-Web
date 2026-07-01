@@ -1,6 +1,9 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
+import FeatureSplit from '../components/FeatureSplit.astro';
+import StepCards from '../components/StepCards.astro';
+import PhotoBand from '../components/PhotoBand.astro';
 import PlaceholderForm from '../components/PlaceholderForm.astro';
 import { pages } from '../data/pages';
 
@@ -12,52 +15,277 @@ export function getStaticPaths() {
 }
 
 const { page } = Astro.props;
+const blocks = page.blocks ?? [];
+
+// Íconos compartidos para el bloque "pillars".
+const pillarIcons: Record<string, string> = {
+  seed: '<path d="M12 21c4-2 7-5 7-9a7 7 0 0 0-14 0c0 4 3 7 7 9z"/><circle cx="12" cy="11" r="2.2"/>',
+  sprout: '<path d="M12 21v-8"/><path d="M12 13c0-3 2-5 5-5 0 3-2 5-5 5z"/><path d="M12 13c0-3-2-5-5-5 0 3 2 5 5 5z"/>',
+  flame: '<path d="M12 3c3 3 5 5.5 5 9a5 5 0 0 1-10 0c0-1.8 1-3.3 2-4 .3 1 .9 1.7 1.7 2C11 8.4 11 5.8 12 3z"/>',
+  people: '<circle cx="8" cy="9" r="2.4"/><circle cx="16" cy="9" r="2.4"/><path d="M3.5 19c0-2.5 2-4.5 4.5-4.5s4.5 2 4.5 4.5"/><path d="M12.6 14.9c1-.9 2.1-1.4 3.4-1.4 2.5 0 4.5 2 4.5 4.5"/>',
+  book: '<path d="M12 6c-2-1.3-4.5-1.5-7-1v12c2.5-.5 5-.3 7 1 2-1.3 4.5-1.5 7-1V5c-2.5-.5-5-.3-7 1z"/><path d="M12 6v13"/>',
+  heart: '<path d="M12 20S3 14.5 3 8.8C3 6.1 5 4.5 7.2 4.5c1.7 0 3.1 1 4.8 3 1.7-2 3.1-3 4.8-3C19 4.5 21 6.1 21 8.8 21 14.5 12 20 12 20z"/>',
+};
 ---
 <BaseLayout title={page.title} description={page.subtitle ?? page.title}>
-  <Hero eyebrow={page.eyebrow} title={page.title} subtitle={page.subtitle} />
+  <Hero eyebrow={page.eyebrow} title={page.title} subtitle={page.subtitle} image={page.heroImage} />
 
-  <section class="section">
-    <div class="container container--narrow">
-      {(page.sections ?? []).map((s) => (
-        <div class={`content-block${s.image ? ' has-media' : ''}`}>
-          <div class="content-text">
-            {s.heading && <h2 id={s.id}>{s.heading}</h2>}
-            {(s.paras ?? []).map((p) => <p>{p}</p>)}
-            {s.list && (
-              <ul class="rule-list">
-                {s.list.map((li) => <li>{li}</li>)}
-              </ul>
-            )}
-            {s.links && (
-              <ul class="link-cards">
-                {s.links.map((l) => (
-                  <li>
-                    <a href={l.href}>
-                      <span class="lc-title">{l.label}</span>
-                      {l.body && <span class="lc-body">{l.body}</span>}
-                      <span class="lc-arrow">Conocer más →</span>
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            )}
-            {s.quote && <blockquote class="scripture">{s.quote}</blockquote>}
-          </div>
-          {s.image && (
-            <figure class="content-figure">
-              <img src={s.image} alt={s.imageAlt ?? ''} loading="lazy" />
-              {s.imageCaption && <figcaption>{s.imageCaption}</figcaption>}
-            </figure>
-          )}
+  {blocks.length > 0 && blocks.map((b) => (
+    b.kind === 'lead' ? (
+      <section id={b.id} class="section lead-section anchor" data-reveal>
+        <div class="container container--narrow">
+          {b.eyebrow && <p class="eyebrow lead-eyebrow">{b.eyebrow}</p>}
+          <p class="lead-text">{b.text}</p>
         </div>
-      ))}
+      </section>
+    ) : b.kind === 'split' ? (
+      <div data-reveal>
+        <FeatureSplit
+          eyebrow={b.eyebrow}
+          heading={b.heading}
+          paras={b.text}
+          id={b.id}
+          image={b.image}
+          imageAlt={b.imageAlt}
+          reverse={b.reverse}
+          tone={b.tone}
+          ctaLabel={b.ctaLabel}
+          ctaHref={b.ctaHref}
+        />
+      </div>
+    ) : b.kind === 'pillars' ? (
+      <section id={b.id} class:list={['section', 'pillar-band', 'anchor', `is-${b.tone ?? 'brand'}`]} data-reveal>
+        <div class="container">
+          {b.eyebrow && <p class="eyebrow pillar-eyebrow">{b.eyebrow}</p>}
+          {b.heading && <h2 class="pillar-heading">{b.heading}</h2>}
+          <div class="pillar-grid">
+            {b.items.map((it) => (
+              <article class="pillar">
+                {it.icon && pillarIcons[it.icon] && (
+                  <span class="pillar-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" set:html={pillarIcons[it.icon]} />
+                  </span>
+                )}
+                {it.value && <span class="pillar-value">{it.value}</span>}
+                <h3 class="pillar-title">{it.title}</h3>
+                {it.body && <p class="pillar-body">{it.body}</p>}
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+    ) : b.kind === 'cards' ? (
+      <div data-reveal>
+        <StepCards eyebrow={b.eyebrow} heading={b.heading} items={b.items} />
+      </div>
+    ) : b.kind === 'quote' ? (
+      <section id={b.id} class="section quote-section anchor" data-reveal>
+        <div class="container container--narrow">
+          {b.eyebrow && <p class="eyebrow">{b.eyebrow}</p>}
+          <blockquote class="big-quote">{b.text}</blockquote>
+          {b.cite && <cite class="quote-cite">{b.cite}</cite>}
+        </div>
+      </section>
+    ) : b.kind === 'cta' ? (
+      <div data-reveal>
+        <PhotoBand
+          eyebrow={b.eyebrow}
+          heading={b.heading}
+          text={b.text}
+          image={b.image}
+          imageAlt={b.imageAlt}
+          ctaLabel={b.ctaLabel}
+          ctaHref={b.ctaHref}
+        />
+      </div>
+    ) : null
+  ))}
 
-      {page.type === 'form' && page.fields && <PlaceholderForm fields={page.fields} />}
-    </div>
-  </section>
+  {/* Fallback: páginas aún no convertidas al sistema de bloques */}
+  {blocks.length === 0 && (
+    <section class="section">
+      <div class="container container--narrow">
+        {(page.sections ?? []).map((s) => (
+          <div class={`content-block${s.image ? ' has-media' : ''}`}>
+            <div class="content-text">
+              {s.heading && <h2 id={s.id}>{s.heading}</h2>}
+              {(s.paras ?? []).map((p) => <p>{p}</p>)}
+              {s.list && (
+                <ul class="rule-list">
+                  {s.list.map((li) => <li>{li}</li>)}
+                </ul>
+              )}
+              {s.links && (
+                <ul class="link-cards">
+                  {s.links.map((l) => (
+                    <li>
+                      <a href={l.href}>
+                        <span class="lc-title">{l.label}</span>
+                        {l.body && <span class="lc-body">{l.body}</span>}
+                        <span class="lc-arrow">Conocer más →</span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {s.quote && <blockquote class="scripture">{s.quote}</blockquote>}
+            </div>
+            {s.image && (
+              <figure class="content-figure">
+                <img src={s.image} alt={s.imageAlt ?? ''} loading="lazy" />
+                {s.imageCaption && <figcaption>{s.imageCaption}</figcaption>}
+              </figure>
+            )}
+          </div>
+        ))}
+      </div>
+    </section>
+  )}
+
+  {page.type === 'form' && page.fields && (
+    <section class="section">
+      <div class="container container--narrow">
+        <PlaceholderForm fields={page.fields} />
+      </div>
+    </section>
+  )}
 </BaseLayout>
 
 <style>
+  .anchor { scroll-margin-top: var(--header-height); }
+
+  /* ── Bloque LEAD: párrafo de entrada grande y centrado ── */
+  .lead-section { text-align: center; padding-block: var(--space-16); }
+  .lead-eyebrow { margin-bottom: var(--space-5); }
+  /* Divisor dorado bajo el eyebrow */
+  .lead-eyebrow::after {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 2px;
+    margin: var(--space-3) auto 0;
+    background: var(--color-secondary);
+    border-radius: var(--radius-pill);
+  }
+  .lead-text {
+    font-family: var(--font-heading);
+    font-size: var(--text-2xl);
+    line-height: var(--leading-snug);
+    color: var(--color-heading);
+    max-width: 26ch;
+    margin-inline: auto;
+    text-wrap: balance;
+  }
+
+  /* ── Bloque PILLARS: franja de valores/cifras con íconos ── */
+  .pillar-band { text-align: center; }
+  .pillar-band.is-brand { background: var(--c-brand-500); color: #fff; }
+  .pillar-band.is-dark { background: var(--c-brand-900); color: #fff; }
+  .pillar-band.is-subtle { background: var(--color-bg-subtle); }
+  .pillar-eyebrow { margin-bottom: var(--space-2); }
+  .pillar-band.is-brand .pillar-eyebrow,
+  .pillar-band.is-dark .pillar-eyebrow { color: var(--c-accent-300); }
+  .pillar-heading {
+    color: inherit;
+    max-width: 26ch;
+    margin-inline: auto;
+    margin-bottom: var(--space-12);
+  }
+  .pillar-band.is-brand .pillar-heading,
+  .pillar-band.is-dark .pillar-heading { color: #fff; }
+  .pillar-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: var(--space-10) var(--space-8);
+    align-items: start;
+  }
+  .pillar { display: flex; flex-direction: column; align-items: center; }
+  .pillar-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 76px;
+    height: 76px;
+    margin-bottom: var(--space-5);
+    border-radius: var(--radius-pill);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(226, 194, 97, 0.45);
+    color: var(--c-accent-300);
+    transition: transform var(--duration-normal) var(--ease-out-expo),
+                background var(--duration-normal) var(--ease-out-expo);
+  }
+  .pillar:hover .pillar-icon { transform: translateY(-4px); background: rgba(255, 255, 255, 0.16); }
+  .pillar-band.is-subtle .pillar-icon {
+    background: #fff;
+    color: var(--color-accent);
+    border-color: var(--color-border);
+    box-shadow: var(--shadow-sm);
+  }
+  .pillar-band.is-subtle .pillar:hover .pillar-icon { background: #fff; box-shadow: var(--shadow-md); }
+  .pillar-icon svg { width: 34px; height: 34px; }
+  .pillar-value {
+    font-family: var(--font-heading);
+    font-size: var(--text-3xl);
+    font-weight: var(--weight-bold);
+    line-height: 1;
+    color: var(--color-secondary);
+  }
+  .pillar-band.is-brand .pillar-value,
+  .pillar-band.is-dark .pillar-value { color: var(--c-accent-300); }
+  .pillar-band.is-subtle .pillar-value { color: var(--color-accent); }
+  .pillar-title {
+    color: inherit;
+    font-size: var(--text-xl);
+    margin-top: var(--space-2);
+  }
+  .pillar-band.is-brand .pillar-title,
+  .pillar-band.is-dark .pillar-title { color: #fff; }
+  .pillar-body {
+    margin-top: var(--space-3);
+    font-size: var(--text-base);
+    line-height: var(--leading-normal);
+    max-width: 30ch;
+    opacity: 0.9;
+  }
+
+  /* ── Bloque QUOTE: cita grande centrada ── */
+  .quote-section { text-align: center; }
+  .big-quote {
+    font-family: var(--font-heading);
+    font-size: var(--text-2xl);
+    font-style: italic;
+    line-height: var(--leading-snug);
+    color: var(--color-heading);
+    margin-top: var(--space-8);
+    max-width: 32ch;
+    margin-inline: auto;
+    position: relative;
+  }
+  /* Comilla decorativa dorada */
+  .big-quote::before {
+    content: '\201C';
+    position: absolute;
+    top: -0.55em;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 4.5em;
+    line-height: 1;
+    color: var(--color-secondary);
+    opacity: 0.18;
+    pointer-events: none;
+  }
+  .quote-cite {
+    display: block;
+    margin-top: var(--space-6);
+    font-family: var(--font-display);
+    font-style: normal;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: var(--text-sm);
+    color: var(--color-muted);
+  }
+
+  /* ── Legacy: columna de texto (páginas sin bloques) ── */
   .content-block + .content-block { margin-top: var(--space-12); }
   .content-block.has-media {
     display: grid;
